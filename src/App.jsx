@@ -1,19 +1,56 @@
 import React, { useState } from "react";
+import DoList from "./DoList.jsx";
 
 const App = () => {
-    let newTime = new Date().toLocaleTimeString();
-    const [ctime, setCtime] = useState(newTime);
+    const [inputList, setInputList] = useState("");
+    const [Items, setItems] = useState([]);
 
-    const UpdateTime = () => {
-        newTime = new Date().toLocaleTimeString();
-        setCtime(newTime);
+    const itemEvent = (event) => {
+        setInputList(event.target.value);
     };
-    
-    setInterval(UpdateTime, 1000)
-    return (
+
+    const listOfItems = () => {
+        setItems((oldItems) => {
+            return [...oldItems, inputList];
+        });
+        setInputList("");
+    };
+    const deleteItem = (id) => {
+        console.log("deleted");
+
+        setItems((oldItems) => {
+            return oldItems.filter((arrElem, index) => {
+                return index !== id;
+            })
+        })
+    };
+    return(
         <>
-            <h1> {ctime} </h1>
-            
+            <div className="main_div">
+                <div className="center_div">
+                    <br />
+                    <h1> ToDo List </h1>
+                    <br />
+                    <input type="text" placeholder="Add a Items"
+                       value={inputList}
+                    onChange={itemEvent} />
+                    <button onClick={listOfItems}> + </button>
+
+                    <ol>
+                        {/*<li> {inputList} </li>*/}
+
+                        {Items.map((itemval, index) => {
+                            return <DoList 
+                            key={index} 
+                            id={index} 
+                            text={itemval} 
+                            onSelect={deleteItem}    
+                            />;
+                        })}
+
+                    </ol>
+                </div>
+            </div>
         </>
     );
 };
